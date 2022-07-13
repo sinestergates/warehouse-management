@@ -1,8 +1,6 @@
 #/usr/bin/python3
 
 
-
-#import RPi.GPIO as GPIO
 from tkinter import * #Tk, Label, Button, Frame, mainloop,messagebox
 from threading import Thread
 import time
@@ -13,8 +11,7 @@ import psycopg2
 
 
 def flash(light_pin):
-    # times = time.monotonic() + 10
-    # while time.monotonic() < times:"""
+    
     for i in range(10):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(light_pin, GPIO.OUT)
@@ -26,14 +23,10 @@ def flash(light_pin):
     time.sleep(1)
 
 
-
-
-
 abc = None
 i = None
 window = (1, 2, 3, 4, 5, 6, 7, 8)
 list_pin=[[26,17,27,4],[22,19,13,19],[18,23,24,25],[12,16,20,21]]
-#list_pin=[26,17,27,4,22,19,13,19,18,23,24,25,12,16,20,21]
 arr_but=[]
 but=[]
 entr=[]
@@ -98,22 +91,35 @@ class App(Tk):
             entry_arr=[]
             self.root=Tk()
             self.root.geometry('800x400')
+            self.listbox = Listbox(self.root,width=50,height=1)
+            self.listbox.insert(END, list_pin)
+
+            self.listbox.place(x=250,y=1)
+            def enter_list_pin():
+                for j in range(len(entr)):
+                    s=list_pin[j]
+                    for jj in range(4):
+                        inp=entr[j][jj]
+                        print(inp)
+                        inp.insert(END, list_pin[j][jj])
             def update_arr():
-                #print(entr)
+                
+                    
                 for i in range(len(entr)):
                     b=entr[i]
                     for g in range(len(b)):
                         b=entr[i][g].get()
-                        #f=list_pin[i][g]
-                        if b == "":
+                        print(b)
+                        if b.isdigit() == False:
                             pass
                         else:
                             del list_pin[i][g]
                             list_pin[i].insert(g,b)
-                            break
-                    print(list_pin)
-                       
-            
+                            self.listbox = Listbox(self.root,width=50,height=1)
+                            self.listbox.place(x=250,y=1)
+                            self.listbox.insert(END, list_pin)
+                            
+                                 
             def entry_greate():
             
                 for i in range(len(list_pin)):
@@ -124,11 +130,12 @@ class App(Tk):
                         ff=self.entry_i_g = Entry(self.root,width=10)
                         ff.place(x=100*(i+1.5),y=100*(g+0.5))
                         entry_arr.append(ff)
-            
+                        
             entry_greate()
             entr = [entry_arr[i:i+4] for i in range(0, len(entry_arr), 4)]
+            enter_list_pin()
             print(entr)
-            self.button1 = Button(self.root, text='ВВОД', width=10, height=1, bg='green', fg='Black', font='arial14',command=update_arr)
+            self.button1 = Button(self.root, text='Сохранить', width=10, height=1, bg='green', fg='Black', font='arial14',command=update_arr)
                             
             self.button1.place(x=50,y=50)
             self.root.mainloop()       
@@ -143,6 +150,11 @@ class App(Tk):
                                 command=lambda: flash(b))
                     ff.place(x=100*(i+1.5),y=100*(g+0.5))
                     arr_but.append(ff)
+                    
+
+                    
+                    
+                    
         but_greate()
         but = [arr_but[i:i+4] for i in range(0, len(arr_but), 4)]
         
@@ -152,32 +164,6 @@ class App(Tk):
         self.button1.place(x=50,y=50)
         
         
-    
-    def check_doors(self):
-        def thread():
-            while True:
-
-                for i in self.pin_arr:
-
-                    GPIO.setmode(GPIO.BCM)
-                    GPIO.setup(self.pin_arr, GPIO.IN)
-                    if GPIO.input(i) == GPIO.HIGH:
-                        but_color = "green"
-                    if GPIO.input(i) == GPIO.LOW:
-                        but_color = "red"
-
-                    
-                    if i == 14:
-                        self.fra1['bg'] = but_color
-                    if i == 15:
-                        self.fra2['bg'] = but_color
-                    if i == 8:
-                        self.fra3['bg'] = but_color
-
-                time.sleep(1)
-
-        Thread(target=thread).start()
-
 
 def main():
     app = App()
@@ -191,6 +177,13 @@ if __name__ == '__main__':
         main()
     except:
         pass
+
+
+
+
+
+
+
 
 
 
